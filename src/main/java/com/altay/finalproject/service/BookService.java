@@ -1,39 +1,57 @@
 package com.altay.finalproject.service;
 
 import com.altay.finalproject.model.dto.request.BookCreateRequest;
+import com.altay.finalproject.model.dto.response.BookResponse;
 import com.altay.finalproject.model.entity.Book;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import com.altay.finalproject.model.mapper.BookMapper;
+import com.altay.finalproject.model.mapper.BookResponseMapper;
+import com.altay.finalproject.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+
+import org.springframework.transaction.annotation.Transactional;
+
+
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     Map<String, Book> books = new HashMap<>();
 
-    public Book createBook(BookCreateRequest bookRequest) {
-        Book book = new Book();
+    private final BookRepository bookRepository;
 
-        UUID id = UUID.randomUUID();
-        book.setId(id);
-        book.setTitle(bookRequest.getTitle());
-        book.setAuthor(bookRequest.getAuthor());
-        book.setIsbn(bookRequest.getIsbn());
-        book.setPublicationDate(LocalDate.now());
-        book.setGenre(Book.Genre.valueOf(bookRequest.getGenre()));
+    // Event publishing for task operations (Java 8 functional interfaces)
+    //private final List<Consumer<Task>> taskCreationListeners = new ArrayList<>();
+    //private final List<Consumer<Task>> taskCompletionListeners = new ArrayList<>();
 
-        books.put(id.toString(), book);
-        return book;
-    }
+    @Transactional
+    public BookResponse createBook(BookCreateRequest request) {
+        //validateTaskInput(title, description);
 
-    public Map<String, Book> getBooks() {
-        return books;
+        Book book = Book.builder()
+                .title(request.getTitle())
+                .author(request.getAuthor())
+                .isbn(request.getIsbn())
+                .genre(Book.Genre.valueOf(request.getGenre().toUpperCase()))
+                .build();
+
+        Book savedBook = bookRepository.save(book);
+
+        // Notify creation listeners
+        //taskCreationListeners.forEach(listener -> listener.accept(savedTask));
+
+        return BookMapper.toDTO(savedBook);
     }
 
     public Book getBook(String id) {
         return books.get(id);
     }
+    public List<BookResponse> getAllBooks() {
+        return BookResponseMapper.INSTANCE.toDTOList(bookRepository.findAll());
+    }
+
+
+
 }

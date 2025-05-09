@@ -41,12 +41,6 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     // Lifecycle methods for setting timestamps and default ID
 
     @PrePersist
@@ -54,17 +48,12 @@ public class Book {
         if (id == null) {
             id = UUID.randomUUID();
         }
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
+        if (publicationDate == null) {
+            publicationDate = LocalDate.now();
         }
-        updatedAt = LocalDateTime.now();
 
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 
     public UUID getId() {
         return id;
@@ -114,21 +103,6 @@ public class Book {
         this.genre = genre;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     public enum Genre {
         FICTION,
@@ -145,7 +119,7 @@ public class Book {
     // Builder default values
     public static class BookBuilder {
         private UUID id = java.util.UUID.randomUUID();
-        private LocalDateTime createdAt = LocalDateTime.now();
+        private LocalDate publicationDate = LocalDate.now();
     }
 }
 
