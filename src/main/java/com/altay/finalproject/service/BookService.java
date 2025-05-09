@@ -2,6 +2,7 @@ package com.altay.finalproject.service;
 
 import com.altay.finalproject.model.dto.request.BookCreateRequest;
 import com.altay.finalproject.model.dto.response.BookResponse;
+import com.altay.finalproject.model.entity.AppUser;
 import com.altay.finalproject.model.entity.Book;
 import com.altay.finalproject.model.entity.BorrowingRecord;
 import com.altay.finalproject.model.mapper.BookMapper;
@@ -10,10 +11,12 @@ import com.altay.finalproject.repository.AppUserRepository;
 import com.altay.finalproject.repository.BookRepository;
 import com.altay.finalproject.repository.BorrowingRecordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,6 +107,28 @@ public class BookService {
 
         borrowingRecordRepository.save(borrowingRecord);
     }
+
+    public List<BorrowingRecord> getBorrowingHistoryForUser(UUID userId) {
+        return borrowingRecordRepository.findByUser_Id(userId);
+    }
+
+    public List<BorrowingRecord> getAllBorrowingHistory() {
+        return borrowingRecordRepository.findAll();
+    }
+
+    public List<BorrowingRecord> getOverdueBooks() {
+        return borrowingRecordRepository.findAll().stream()
+                .filter(record -> record.getDueDate().isBefore(LocalDate.now()) && record.getStatus() != BorrowingRecord.BorrowingStatus.RETURNED)
+                .collect(Collectors.toList());
+    }
+
+    public AppUser getUserByUsername(String username) {
+        return appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+
+
 
 
 

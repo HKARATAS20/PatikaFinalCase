@@ -2,6 +2,7 @@ package com.altay.finalproject.controller;
 
 import com.altay.finalproject.model.dto.request.BookCreateRequest;
 import com.altay.finalproject.model.dto.response.BookResponse;
+import com.altay.finalproject.model.entity.AppUser;
 import com.altay.finalproject.model.entity.Book;
 import com.altay.finalproject.model.entity.BorrowingRecord;
 import com.altay.finalproject.service.BookService;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,15 +65,56 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
     }
 
-    @PostMapping("/borrow/{userId}/{bookId}")
-    public ResponseEntity<?> borrowBook(@PathVariable UUID userId, @PathVariable UUID bookId) {
+    @PostMapping("/borrow/{bookId}")
+    public ResponseEntity<?> borrowBook(@PathVariable UUID bookId) {
+
+
         try {
-            BorrowingRecord borrowingRecord = bookService.borrowBook(userId, bookId);
+            BorrowingRecord borrowingRecord = bookService.borrowBook(getCurrentUserId(), bookId);
             return ResponseEntity.ok(borrowingRecord);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+    @PostMapping("/return/{bookId}")
+    public ResponseEntity<?> returnBook(@PathVariable UUID bookId) {
+
+        try {
+            bookService.returnBook(getCurrentUserId(), bookId);
+            return ResponseEntity.ok("Book returned successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<BorrowingRecord>> viewBorrowingHistory() {
+
+        List<BorrowingRecord> history = bookService.getBorrowingHistoryForUser(getCurrentUserId());
+        return ResponseEntity.ok(history);
+    }
+    @GetMapping("/all-history")
+    public ResponseEntity<List<BorrowingRecord>> viewAllBorrowingHistory() {
+        List<BorrowingRecord> history = bookService.getAllBorrowingHistory();
+        return ResponseEntity.ok(history);
+    }
+
+    @GetMapping("/overdue")
+    public ResponseEntity<List<BorrowingRecord>> manageOverdueBooks() {
+        List<BorrowingRecord> overdueBooks = bookService.getOverdueBooks();
+        return ResponseEntity.ok(overdueBooks);
+    }
+
+
+
+    private UUID getCurrentUserId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        AppUser user = bookService.getUserByUsername(username);
+        return user.getId();
+    }
+
 
 
 
