@@ -29,7 +29,8 @@ class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll() // ✅ Allow public access to login
+                        .requestMatchers("/auth/register").permitAll() // ✅ Allow public access to login
+                        .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // ✅ Allow public access to swagger
                         .anyRequest().authenticated() // 🔒 Secure all other endpoints
                 )

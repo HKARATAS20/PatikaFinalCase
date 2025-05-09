@@ -3,6 +3,7 @@ package com.altay.finalproject.controller;
 import com.altay.finalproject.model.dto.request.BookCreateRequest;
 import com.altay.finalproject.model.dto.response.BookResponse;
 import com.altay.finalproject.model.entity.Book;
+import com.altay.finalproject.model.entity.BorrowingRecord;
 import com.altay.finalproject.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/books")
@@ -44,29 +46,7 @@ public class BookController {
         return bookService.createBook(bookCreateRequest);
     }
 
-  /*  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    // HTTP Post
-    // HTTP Status Code : 201
-    // HTTP Body : JSON
-    // HTTP Response : JSON
 
-    // @RequestBody : It is a Spring annotation that tells Spring to automatically deserialize the request body into the TaskRequest object.
-
-    @Operation(
-            summary = "Create a new book",
-            description = "Creates a new task with the provided title, author, isbn and genre",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Book created successfully",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = BookResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input")
-            }
-    )
-    public ResponseEntity<BookResponse> createTask(@RequestBody BookCreateRequest request) {
-        BookResponse newBookResponse =  bookService.createBook(request);
-        return new ResponseEntity<>(newBookResponse, HttpStatus.CREATED);
-    }
-*/
     // CRUD Operations
     // Create, Read, Update, Delete
     @Operation(
@@ -82,6 +62,17 @@ public class BookController {
     public ResponseEntity<List<BookResponse>> getAllBooks() {
         return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
     }
+
+    @PostMapping("/borrow/{userId}/{bookId}")
+    public ResponseEntity<?> borrowBook(@PathVariable UUID userId, @PathVariable UUID bookId) {
+        try {
+            BorrowingRecord borrowingRecord = bookService.borrowBook(userId, bookId);
+            return ResponseEntity.ok(borrowingRecord);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 
 

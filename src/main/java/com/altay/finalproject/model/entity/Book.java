@@ -41,6 +41,9 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
+    @Column(name = "is_available", nullable = false)
+    private boolean isAvailable;
+
     // Lifecycle methods for setting timestamps and default ID
 
     @PrePersist
@@ -51,6 +54,7 @@ public class Book {
         if (publicationDate == null) {
             publicationDate = LocalDate.now();
         }
+        isAvailable = true; // default to available
 
     }
 
@@ -103,6 +107,15 @@ public class Book {
         this.genre = genre;
     }
 
+    public Boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.isAvailable = available;
+    }
+
+
 
     public enum Genre {
         FICTION,
@@ -120,6 +133,7 @@ public class Book {
     public static class BookBuilder {
         private UUID id = java.util.UUID.randomUUID();
         private LocalDate publicationDate = LocalDate.now();
+        private boolean isAvailable = true;
     }
 }
 
