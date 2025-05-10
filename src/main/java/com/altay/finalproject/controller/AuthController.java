@@ -14,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import com.altay.finalproject.model.dto.request.RegisterRequest;
 import com.altay.finalproject.security.CustomUserDetailsService;
 import com.altay.finalproject.model.entity.AppUser;
@@ -38,6 +44,18 @@ public class AuthController {
     }
 
     // Register Endpoint
+    @Operation(
+            summary = "Register a new user",
+            description = "Registers a new user with username, password, name, email, and role. Role should be either 'PATRON' or 'LIBRARIAN'.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User registered successfully",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Username already exists",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)))
+            }
+    )
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         // Check if user already exists
@@ -53,17 +71,25 @@ public class AuthController {
         newUser.setName(request.getName());
         newUser.setEmail(request.getEmail());
 
-        // Set Role based on the request
-        //Role role = Role.valueOf(request.getRole().toUpperCase()); // Convert to enum (PATRON or LIBRARIAN)
         newUser.setRole(request.getRole());
 
-        // Save the new user
         appUserRepository.save(newUser);
 
         return ResponseEntity.ok("User registered successfully");
     }
 
-    // Login Endpoint (unchanged)
+    @Operation(
+            summary = "User login",
+            description = "Authenticates a user with username and password. Returns a JWT token if successful.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login successful",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = AuthResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Invalid credentials",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class)))
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         authenticationManager.authenticate(

@@ -54,9 +54,17 @@ public class BookService {
         return BookMapper.toDTO(savedBook);
     }
 
-    public Book getBook(String id) {
-        return books.get(id);
+    public BookResponse getBookDetails(UUID bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        return BookMapper.toDTO(book);
     }
+
+    public List<BookResponse> searchBooksByTitle(String title) {
+        return BookResponseMapper.INSTANCE.toDTOList(bookRepository.findByTitleContainingIgnoreCase(title));
+    }
+
+
     public List<BookResponse> getAllBooks() {
         return BookResponseMapper.INSTANCE.toDTOList(bookRepository.findAll());
     }
