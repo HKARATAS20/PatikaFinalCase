@@ -24,33 +24,21 @@ import java.util.UUID;
 @RequestMapping("/books")
 public class BookController {
 
-
     private final BookService bookService;
-
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
-
-    /*
-    {
-    "title": "Eclipse",
-    "author": "Andy Weirin Kardeşi",
-    "isbn": "12345678",
-    "genre": "FICTION"
-    }
-     */
-
-    @PostMapping(produces = "application/json",consumes = "application/json")
-    public BookResponse addBook(@RequestBody BookCreateRequest bookCreateRequest) {
-        System.out.println("request is " + bookCreateRequest);
-        return bookService.createBook(bookCreateRequest);
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<?> addBook(@RequestBody BookCreateRequest bookCreateRequest) {
+        if (!userHasRole("LIBRARIAN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only librarians can add books.");
+        }
+        BookResponse response = bookService.createBook(bookCreateRequest);
+        return ResponseEntity.ok(response);
     }
 
-
-    // CRUD Operations
-    // Create, Read, Update, Delete
     @Operation(
             summary = "Get all books",
             description = "Retrieves a list of all tasks in the system",
@@ -61,28 +49,33 @@ public class BookController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<BookResponse>> getAllBooks() {
-        return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
+    public ResponseEntity<?> getAllBooks() {
+        if (!userHasAnyRole("LIBRARIAN", "PATRON")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied.");
+        }
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @PostMapping("/borrow/{bookId}")
     public ResponseEntity<?> borrowBook(@PathVariable UUID bookId) {
-
-
+        if (!userHasRole("PATRON")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only patrons can borrow books.");
+        }
         try {
-            BorrowingRecord borrowingRecord = bookService.borrowBook(getCurrentUserId(), bookId);
+            BorrowingRecord borrowingRecord = bookService.borrowBook(getCurrentUser().getId(), bookId);
             return ResponseEntity.ok(borrowingRecord);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-
     @PostMapping("/return/{bookId}")
     public ResponseEntity<?> returnBook(@PathVariable UUID bookId) {
-
+        if (!userHasRole("PATRON")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only patrons can return books.");
+        }
         try {
-            bookService.returnBook(getCurrentUserId(), bookId);
+            bookService.returnBook(getCurrentUser().getId(), bookId);
             return ResponseEntity.ok("Book returned successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -90,33 +83,48 @@ public class BookController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<BorrowingRecord>> viewBorrowingHistory() {
-
-        List<BorrowingRecord> history = bookService.getBorrowingHistoryForUser(getCurrentUserId());
+    public ResponseEntity<?> viewBorrowingHistory() {
+        if (!userHasRole("PATRON")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only patrons can view their history.");
+        }
+        List<BorrowingRecord> history = bookService.getBorrowingHistoryForUser(getCurrentUser().getId());
         return ResponseEntity.ok(history);
     }
+
     @GetMapping("/all-history")
-    public ResponseEntity<List<BorrowingRecord>> viewAllBorrowingHistory() {
-        List<BorrowingRecord> history = bookService.getAllBorrowingHistory();
-        return ResponseEntity.ok(history);
+    public ResponseEntity<?> viewAllBorrowingHistory() {
+        if (!userHasRole("LIBRARIAN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only librarians can view all histories.");
+        }
+        return ResponseEntity.ok(bookService.getAllBorrowingHistory());
     }
 
     @GetMapping("/overdue")
-    public ResponseEntity<List<BorrowingRecord>> manageOverdueBooks() {
-        List<BorrowingRecord> overdueBooks = bookService.getOverdueBooks();
-        return ResponseEntity.ok(overdueBooks);
+    public ResponseEntity<?> manageOverdueBooks() {
+        if (!userHasRole("LIBRARIAN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only librarians can view overdue books.");
+        }
+        return ResponseEntity.ok(bookService.getOverdueBooks());
     }
 
 
-
-    private UUID getCurrentUserId() {
+    private AppUser getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        AppUser user = bookService.getUserByUsername(username);
-        return user.getId();
+        return bookService.getUserByUsername(username);
     }
 
+    private boolean userHasRole(String role) {
+        return getCurrentUser().getRole().name().equalsIgnoreCase(role);
+    }
 
-
-
-
+    private boolean userHasAnyRole(String... roles) {
+        String currentRole = getCurrentUser().getRole().name();
+        for (String role : roles) {
+            if (currentRole.equalsIgnoreCase(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
+
