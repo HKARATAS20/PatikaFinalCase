@@ -81,8 +81,8 @@ A comprehensive Library Management System built with **Spring Boot 3**, **Java 2
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/library-management-system.git
-cd library-management-system
+git clone https://github.com/HKARATAS20/PatikaFinalCase.git
+cd PatikaFinalCase
 
 # Update application.properties with your PostgreSQL credentials
 
