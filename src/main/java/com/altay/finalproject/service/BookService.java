@@ -61,18 +61,21 @@ public class BookService {
     }
 
     public List<BookResponse> searchBooksByTitle(String title) {
-        return BookResponseMapper.INSTANCE.toDTOList(bookRepository.findByTitleContainingIgnoreCase(title));
+        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
+        return books.stream().map(BookMapper::toDTO).collect(Collectors.toList());
+
     }
 
 
     public List<BookResponse> getAllBooks() {
-        return BookResponseMapper.INSTANCE.toDTOList(bookRepository.findAll());
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(BookMapper::toDTO).collect(Collectors.toList());
     }
 
     public BorrowingRecord borrowBook(UUID userId, UUID bookId) {
         // Ensure book is available
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-        if (!book.isAvailable()) {
+        if (!book.getIsAvailable()) {
             throw new RuntimeException("Book is not available");
         }
 

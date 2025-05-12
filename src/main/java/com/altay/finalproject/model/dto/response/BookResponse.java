@@ -9,6 +9,7 @@ public record BookResponse (
         String title,
         String author,
         String isbn,
-        Book.Genre genre
+        Book.Genre genre,
+        Boolean isAvailable
 )
 {}

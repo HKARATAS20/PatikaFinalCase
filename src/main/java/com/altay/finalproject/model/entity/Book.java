@@ -3,13 +3,8 @@ package com.altay.finalproject.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-
-
-import jakarta.persistence.*;
-import lombok.*;
 
 import java.time.LocalDate;
 
@@ -107,7 +102,7 @@ public class Book {
         this.genre = genre;
     }
 
-    public Boolean isAvailable() {
+    public Boolean getIsAvailable() {
         return isAvailable;
     }
 
