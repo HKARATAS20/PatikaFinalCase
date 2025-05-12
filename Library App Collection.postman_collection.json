@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "d1d95932-e86f-42d0-a105-e23535364e92",
+		"name": "Library App Collection",
+		"description": "This collection holds sample requests for all API endpoints. Before using any endpoint registering and logging in is required. After logging in use the token generated in the response as the bearer token for any future requests. Only login and register endpoints can be accessed without bearer token authentication.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44795413",
+		"_collection_link": "https://orange-crescent-5908549.postman.co/workspace/Altay-Karata%25C5%259F's-Workspace~ccc629fa-cbd3-4a3b-82e2-82b6a127c413/collection/44795413-d1d95932-e86f-42d0-a105-e23535364e92?action=share&source=collection_link&creator=44795413"
+	},
+	"item": [
+		{
+			"name": "create book",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lX2RvZSIsImlhdCI6MTc0NzAyNjUzNywiZXhwIjoxNzQ3MDMwMTM3fQ.JA6jJAN85Qh19B049ZY0OWoLOnFEjL1zcIoyruis4HI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"1984  \",\n  \"author\": \"George Orwell\",\n  \"isbn\": \"9786051981832\",\n  \"genre\": \"FICTION\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/books",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"jane_doe\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get books",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huX2RvZSIsImlhdCI6MTc0NzAyNjQzOSwiZXhwIjoxNzQ3MDMwMDM5fQ.l088H9owV5ZKyOGTl3lln-hudZM-sFGs9o4Q9gmBxxc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/books",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register new user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"librarian_doe\",\n  \"password\": \"password123\",\n  \"name\": \"librarian Doe\",\n  \"email\": \"librarian@example.com\",\n  \"role\": \"LIBRARIAN\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/auth/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "borrow a book",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huX2RvZSIsImlhdCI6MTc0NjkwNDY0OSwiZXhwIjoxNzQ2OTA4MjQ5fQ.wvP05wrbY7dA_xYHsiSvwXJVbE81acraHfv3NSIcN6E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/books/borrow/87f4e992-4acf-4f9a-8aa3-73a5f9360c97",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"borrow",
+						"87f4e992-4acf-4f9a-8aa3-73a5f9360c97"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a list of overdue books",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lX2RvZSIsImlhdCI6MTc0NjkwNTM4MCwiZXhwIjoxNzQ2OTA4OTgwfQ.SeSEMNZMigHw4y8dDlZi59yZK3fAIfWc6-H5RaT5gyI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/books/overdue",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"overdue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get book details by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lX2RvZSIsImlhdCI6MTc0NzAyNjUzNywiZXhwIjoxNzQ3MDMwMTM3fQ.JA6jJAN85Qh19B049ZY0OWoLOnFEjL1zcIoyruis4HI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/books/cb8efb0f-fb92-4b69-ad9c-968243cb38bd",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"cb8efb0f-fb92-4b69-ad9c-968243cb38bd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search books by name",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lX2RvZSIsImlhdCI6MTc0NzAyNjUzNywiZXhwIjoxNzQ3MDMwMTM3fQ.JA6jJAN85Qh19B049ZY0OWoLOnFEjL1zcIoyruis4HI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books/search?title=the martian",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"search"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "the martian"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
