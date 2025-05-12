@@ -69,7 +69,9 @@ A comprehensive Library Management System built with **Spring Boot 3**, **Java 2
 
 ---
 ## 📄 Postman Collection
-- Postman collection can be viewed from this [link](https://orange-crescent-5908549.postman.co/workspace/Altay-Karata%C5%9F's-Workspace~ccc629fa-cbd3-4a3b-82e2-82b6a127c413/collection/44795413-d1d95932-e86f-42d0-a105-e23535364e92?action=share&creator=44795413)
+- Postman collection can be downloaded from in the main directory of the repository.
+Library App Collection.postman_collection.json
+- Or alternatively can be viewed from this [link](https://orange-crescent-5908549.postman.co/workspace/Altay-Karata%C5%9F's-Workspace~ccc629fa-cbd3-4a3b-82e2-82b6a127c413/collection/44795413-d1d95932-e86f-42d0-a105-e23535364e92?action=share&creator=44795413)
 
 
 
