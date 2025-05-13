@@ -21,7 +21,7 @@ A comprehensive Library Management System built with **Spring Boot 3**, **Java 2
 - Spring Boot 3
 - Spring Security
 - PostgreSQL
-- Swagger / OpenAPI
+- Swagger / OpenAPI which can be viewed from http://localhost:8080/swagger-ui/index.html#/
 - Maven / Gradle
 
 ---
