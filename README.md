@@ -66,6 +66,9 @@ A comprehensive Library Management System built with **Spring Boot 3**, **Java 2
   - Can view and search books
   - Can borrow and return books
   - Can view personal borrowing history
+---
+##  Database Structure 
+<img width="858" alt="Screenshot 2025-05-20 at 14 49 33" src="https://github.com/user-attachments/assets/8290fd7f-f4c4-4ced-8a11-ddbfb990101b" />
 
 ---
 ## 📄 Postman Collection
